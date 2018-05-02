@@ -17,7 +17,7 @@ class Worker @Autowired constructor(
         private val topology: Topology
 ){
 
-    private val streams: KafkaStreams? = null
+    private lateinit var streams: KafkaStreams
 
 
     @PostConstruct
@@ -40,7 +40,7 @@ class Worker @Autowired constructor(
         // Now that we have finished the definition of the processing topology we can actually run
         // it via `start()`.  The Streams application as a whole can be launched just like any
         // normal Java application that has a `main()` method.
-        val streams = KafkaStreams(builder.build(), kafkaConfig.kstreams().streamsConfiguration())
+        streams = KafkaStreams(builder.build(), kafkaConfig.kstreams.streamsConfiguration())
         // Always (and unconditionally) clean local state prior to starting the processing topology.
         // We opt for this unconditional call here because this will make it easier for you to play around with the example
         // when resetting the application for doing a re-run (via the Application Reset Tool,
@@ -51,11 +51,11 @@ class Worker @Autowired constructor(
         // Thus in a production scenario you typically do not want to clean up always as we do here but rather only when it
         // is truly needed, i.e., only under certain conditions (e.g., the presence of a command line flag for your app).
         // See `ApplicationResetExample.java` for a production-like example.
-        if (kafkaConfig.kstreams().doCleanUp)
+        if (kafkaConfig.kstreams.doCleanUp)
             streams.cleanUp()
 
         // disable for unit tests only
-        if (kafkaConfig.kstreams().doStart)
+        if (kafkaConfig.kstreams.doStart)
             streams.start()
 
     }
@@ -63,7 +63,7 @@ class Worker @Autowired constructor(
 
     @PreDestroy
     fun closeStream() {
-        if (kafkaConfig.kstreams().doStart)
-            streams?.close()
+        if (kafkaConfig.kstreams.doStart)
+            streams.close()
     }
 }

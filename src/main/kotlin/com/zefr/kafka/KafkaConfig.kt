@@ -22,40 +22,29 @@ import javax.annotation.PostConstruct
 @ConfigurationProperties("app.kafka")
 class KafkaConfig {
 
-    var kstreams: KStreamsConfig? = null
-    var inputTopic: KafkaTopicConfig? = null
-    var outputTopic: KafkaTopicConfig? = null
-    var schemaRegistryUrl: String = UNSET_VALUE
+    val kstreams: KStreamsConfig = KStreamsConfig()
+    val inputTopic: KafkaTopicConfig = KafkaTopicConfig()
+    val outputTopic: KafkaTopicConfig = KafkaTopicConfig()
+    lateinit var schemaRegistryUrl: String
 
     //TODO: This null bug is an issue with Spring and kotlin. Super annoying.
     // A data class version of this would be correct
     // https://github.com/spring-projects/spring-boot/issues/8762
 
-    fun kstreams(): KStreamsConfig {
-        return kstreams!!
-    }
-
-    fun inputTopic(): KafkaTopicConfig {
-        return inputTopic!!
-    }
-
-    fun outputTopic(): KafkaTopicConfig {
-        return outputTopic!!
-    }
     @PostConstruct
     fun injectSchemaRegistryURL() {
-        kstreams().schemaRegristryUrl = schemaRegistryUrl
-        inputTopic().schemaRegistryUrl = schemaRegistryUrl
-        outputTopic().schemaRegistryUrl = schemaRegistryUrl
+        kstreams.schemaRegristryUrl = schemaRegistryUrl
+        inputTopic.schemaRegistryUrl = schemaRegistryUrl
+        outputTopic.schemaRegistryUrl = schemaRegistryUrl
     }
 
 
 
     class KStreamsConfig {
-        var bootstrapServers: String = UNSET_VALUE
-        var applicationId: String = UNSET_VALUE
-        var clientId: String = UNSET_VALUE
-        var schemaRegristryUrl: String = UNSET_VALUE
+        lateinit var bootstrapServers: String
+        lateinit var applicationId: String
+        lateinit var clientId: String
+        lateinit var schemaRegristryUrl: String
         var keySerdeClass: String = Serdes.String().javaClass.name
         var valueSerdeClass: String = SpecificAvroSerde<SpecificRecord>().javaClass.name
         var commitIntervalMs: Int = 10 * 1000 // 10 seconds
@@ -83,17 +72,15 @@ class KafkaConfig {
     }
 
     class KafkaTopicConfig {
-        var name: String = UNSET_VALUE
+        lateinit var name: String
         var keySerdeClass: String = Serdes.String().javaClass.name
         var valueSerdeClass: String = SpecificAvroSerde<SpecificRecord>().javaClass.name
-        var schemaRegistryUrl: String = UNSET_VALUE
+        lateinit var schemaRegistryUrl: String
         fun keySerde(): Serde<Any> = constructSerde(keySerdeClass, schemaRegistryUrl, true)
         fun valueSerde(): Serde<Any> = constructSerde(valueSerdeClass, schemaRegistryUrl, false)
     }
 
     companion object {
-        val UNSET_VALUE = "changeme";
-
         fun constructSerde(serdeName: String, schemaRegristryUrl: String, keySerde: Boolean): Serde<Any> {
             val kClass = Class.forName(serdeName).kotlin
             val serde: Serde<Any> = kClass.constructors

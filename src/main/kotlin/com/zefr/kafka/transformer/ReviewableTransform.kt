@@ -19,15 +19,15 @@ class ReviewableTransform @Autowired constructor(
 ) : Topology {
 
     override fun apply(builder: StreamsBuilder) {
-        val textLines = builder.stream(kafkaConfig.inputTopic().name,
-                Consumed.with(kafkaConfig.inputTopic().keySerde() as Serde<String>,
-                        kafkaConfig.inputTopic().valueSerde() as Serde<VideoMessage>)
+        val textLines = builder.stream(kafkaConfig.inputTopic.name,
+                Consumed.with(kafkaConfig.inputTopic.keySerde() as Serde<String>,
+                        kafkaConfig.inputTopic.valueSerde() as Serde<VideoMessage>)
         )
         textLines.mapValues { video: VideoMessage ->
             ReviewableMessage.newBuilder().setMetadata(video.getMetadata()).setPayload(
                     Reviewable.newBuilder().setVideo(video.getPayload()).build()).build()
-        }.to(kafkaConfig.outputTopic().name, Produced.with(kafkaConfig.outputTopic().keySerde() as Serde<String>,
-                    kafkaConfig.outputTopic().valueSerde() as Serde<ReviewableMessage>))
+        }.to(kafkaConfig.outputTopic.name, Produced.with(kafkaConfig.outputTopic.keySerde() as Serde<String>,
+                    kafkaConfig.outputTopic.valueSerde() as Serde<ReviewableMessage>))
     }
 
 

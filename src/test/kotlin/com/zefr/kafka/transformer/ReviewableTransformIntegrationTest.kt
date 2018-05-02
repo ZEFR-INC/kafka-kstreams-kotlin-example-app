@@ -77,7 +77,7 @@ class ReviewableTransformIntegrationTest {
         val builder = StreamsBuilder()
 
         // make a copy of the configs and set up the kafka and offset configs
-        val streamsConfiguration = kafkaConfig.kstreams().streamsConfiguration();
+        val streamsConfiguration = kafkaConfig.kstreams.streamsConfiguration();
         streamsConfiguration[StreamsConfig.BOOTSTRAP_SERVERS_CONFIG] = CLUSTER.bootstrapServers()
         streamsConfiguration[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
 
@@ -100,7 +100,7 @@ class ReviewableTransformIntegrationTest {
         producerConfig[ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
         producerConfig[ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG] = KafkaAvroSerializer::class.java
         producerConfig[AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG] = CLUSTER.schemaRegistryUrl()
-        IntegrationTestUtils.produceKeyValuesSynchronously(kafkaConfig.inputTopic().name, inputValues, producerConfig)
+        IntegrationTestUtils.produceKeyValuesSynchronously(kafkaConfig.inputTopic.name, inputValues, producerConfig)
 
         //
         // Step 3: Verify the application's output data.
@@ -116,7 +116,7 @@ class ReviewableTransformIntegrationTest {
 
         // fetch all the messages we expect to receive. Adding type here to be clear
         val actualValues: List<KeyValue<String, ReviewableMessage>> = IntegrationTestUtils.waitUntilMinKeyValueRecordsReceived<String, ReviewableMessage>(consumerConfig,
-                kafkaConfig.outputTopic().name, inputValues.size)
+                kafkaConfig.outputTopic.name, inputValues.size)
         streams.close()
 
         // check results
