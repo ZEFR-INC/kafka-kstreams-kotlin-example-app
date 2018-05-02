@@ -1,4 +1,4 @@
-package com.skunkworks.translator
+package com.zefr.kafka
 
 import org.apache.kafka.streams.StreamsBuilder
 

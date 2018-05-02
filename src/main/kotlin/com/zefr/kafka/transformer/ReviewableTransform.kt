@@ -1,8 +1,10 @@
-package com.skunkworks.translator
+package com.zefr.kafka.transformer
 
 import com.zefr.avro.message.video.Reviewable
 import com.zefr.avro.message.video.ReviewableMessage
 import com.zefr.avro.message.video.VideoMessage
+import com.zefr.kafka.KafkaConfig
+import com.zefr.kafka.Topology
 import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.streams.Consumed
 import org.apache.kafka.streams.StreamsBuilder

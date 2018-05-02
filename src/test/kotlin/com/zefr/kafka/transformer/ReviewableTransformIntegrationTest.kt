@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.skunkworks.translator
+package com.zefr.kafka.transformer
 
 import com.zefr.avro.message.video.ReviewableMessage
 import com.zefr.avro.message.video.Video
 import com.zefr.avro.message.video.VideoMessage
+import com.zefr.kafka.KafkaConfig
 import io.confluent.examples.streams.IntegrationTestUtils
 import io.confluent.examples.streams.kafka.EmbeddedSingleNodeKafkaCluster
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig
@@ -133,8 +134,8 @@ class ReviewableTransformIntegrationTest {
         @ClassRule
         val CLUSTER = EmbeddedSingleNodeKafkaCluster()
 
-        private val inputTopic = "inputTopic2"
-        private val outputTopic = "outputTopic2"
+        private val inputTopic = "inputTopic"
+        private val outputTopic = "outputTopic"
 
         @BeforeClass
         @JvmStatic

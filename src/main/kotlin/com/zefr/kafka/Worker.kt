@@ -1,14 +1,9 @@
-package com.skunkworks.translator
+package com.zefr.kafka
 
-import com.zefr.avro.message.video.VideoMessage
-import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.StreamsBuilder
-import org.apache.kafka.streams.kstream.KStreamBuilder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import java.util.*
-import java.util.regex.Pattern
 import javax.annotation.PostConstruct
 import javax.annotation.PreDestroy
 
