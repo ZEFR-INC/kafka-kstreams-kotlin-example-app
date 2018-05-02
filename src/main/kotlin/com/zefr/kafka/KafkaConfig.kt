@@ -20,11 +20,11 @@ import javax.annotation.PostConstruct
 @Component
 @PropertySource("classpath:application.properties")
 @ConfigurationProperties("app.kafka")
-class KafkaConfig {
+class KafkaConfig<K, V, K2, V2> {
 
     val kstreams: KStreamsConfig = KStreamsConfig()
-    val inputTopic: KafkaTopicConfig = KafkaTopicConfig()
-    val outputTopic: KafkaTopicConfig = KafkaTopicConfig()
+    val inputTopic: KafkaTopicConfig<K,V> = KafkaTopicConfig()
+    val outputTopic: KafkaTopicConfig<K2,V2> = KafkaTopicConfig()
     lateinit var schemaRegistryUrl: String
 
     //TODO: This null bug is an issue with Spring and kotlin. Super annoying.
@@ -71,13 +71,13 @@ class KafkaConfig {
 
     }
 
-    class KafkaTopicConfig {
+    class KafkaTopicConfig<KEY, VALUE> {
         lateinit var name: String
         var keySerdeClass: String = Serdes.String().javaClass.name
         var valueSerdeClass: String = SpecificAvroSerde<SpecificRecord>().javaClass.name
         lateinit var schemaRegistryUrl: String
-        fun keySerde(): Serde<Any> = constructSerde(keySerdeClass, schemaRegistryUrl, true)
-        fun valueSerde(): Serde<Any> = constructSerde(valueSerdeClass, schemaRegistryUrl, false)
+        fun keySerde(): Serde<KEY> = constructSerde(keySerdeClass, schemaRegistryUrl, true) as Serde<KEY>
+        fun valueSerde(): Serde<VALUE> = constructSerde(valueSerdeClass, schemaRegistryUrl, false) as Serde<VALUE>
     }
 
     companion object {

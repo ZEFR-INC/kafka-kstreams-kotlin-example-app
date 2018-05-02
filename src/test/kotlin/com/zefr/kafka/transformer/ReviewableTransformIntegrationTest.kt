@@ -57,7 +57,7 @@ import org.springframework.test.context.junit4.SpringRunner
 class ReviewableTransformIntegrationTest {
 
     @Autowired
-    lateinit var kafkaConfig: KafkaConfig;
+    lateinit var kafkaConfig: KafkaConfig<String, VideoMessage, String, ReviewableMessage>;
     @Autowired
     lateinit var reviewableTransform: ReviewableTransform
 

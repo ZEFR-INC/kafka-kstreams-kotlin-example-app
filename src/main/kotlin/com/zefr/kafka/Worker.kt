@@ -13,7 +13,7 @@ import javax.annotation.PreDestroy
  */
 @Component("worker")
 class Worker @Autowired constructor(
-        private val kafkaConfig: KafkaConfig,
+        private val kafkaConfig: KafkaConfig<Any,Any,Any,Any>,
         private val topology: Topology
 ){
 
