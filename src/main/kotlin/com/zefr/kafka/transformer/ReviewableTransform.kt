@@ -1,5 +1,6 @@
 package com.zefr.kafka.transformer
 
+import com.zefr.avro.message.Metadata
 import com.zefr.avro.message.video.Reviewable
 import com.zefr.avro.message.video.ReviewableMessage
 import com.zefr.avro.message.video.VideoMessage
@@ -11,6 +12,7 @@ import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.kstream.Produced
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import java.util.*
 
 
 @Component("reviewableTransform")
@@ -24,7 +26,10 @@ class ReviewableTransform @Autowired constructor(
                         kafkaConfig.inputTopic.valueSerde())
         )
         textLines.mapValues { video: VideoMessage ->
-            ReviewableMessage.newBuilder().setMetadata(video.getMetadata()).setPayload(
+            ReviewableMessage.newBuilder().setMetadata(
+                    Metadata.newBuilder().setUuid(UUID.randomUUID().toString())
+                            .setCorrelatedUuids(listOf(video.metadata.correlatedUuids,listOf(video.metadata.uuid)).flatten()).build()
+            ).setPayload(
                     Reviewable.newBuilder().setVideo(video.getPayload()).build()).build()
         }.to(kafkaConfig.outputTopic.name, Produced.with(kafkaConfig.outputTopic.keySerde(),
                     kafkaConfig.outputTopic.valueSerde()))
